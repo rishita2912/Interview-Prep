@@ -1,0 +1,156 @@
+Concepts of OOPs with the help of real life examples:
+
+Why OOPs??? To solve real world problems we use OOps and to increase the redability and reusabality of a code.
+
+1. Encapsulation : Wrapping up of data and methods within a class. It provides accessibility and it prevents the external code from directly
+modifying the internal data of an object.
+ 
+Coding example:  class Encap{
+                     private:
+                     int age; 
+                     public:
+                     string name;
+                     void setValue(int a){                         
+                        age = a;
+                        cout<<age;
+                  };
+                 main()
+                  {
+                    Encap E;
+                    E.name = "Akhil";
+                    E.setValue(23);
+                    cout<<E.age<<endl;
+                    cout<<E.name<<endl;
+                  }
+ Means we can access the private data within the class by creating a function for it inside the same class inside the public section.
+
+Real life example of encapsulation : The most common example is the medicine capsule. This capsule mixes few types of medicines and stored in one capsule.
+
+2. Abstraction : It is the process of simplyfying complex objects by focusing on essential features while hiding unnecessary details.
+
+Coding Example : class Car{
+                       boolean startEngine;
+                       public:
+                       void start(){
+                           startEngine = true;
+                           cout<<"Engine Started"<<endl;
+                         }
+                       void drive(){
+                           if(startEngine){
+                          cout<<"You are ready to drive";
+                          }
+                          else
+                          {
+                           cout<<"Can't drive the car";
+                          }
+                        }
+                   };
+                 main(){
+                    Car c;
+                    c.start();
+                    c.drive();
+                 }
+Means the implementation details of car are hidden and only start and drive options are there.
+
+Real Life Example of Abstraction: Your Car; you can start a car by turning the key or pressing the start button. You don't know how the engine gets started.
+
+3. Polymorphism: It is a concept in which an object can be treated in different ways. It means that objects of a class can 
+be used as objects of their derived classes.
+
+Coding Example :
+
+Compile Time Polymorphism:
+ void showInfo(info age)
+{
+  cout<<age<<endl;
+}
+void showInfo(string name)
+{
+  cout<<name<<endl;
+}
+void showInfo(double salary)
+{
+  cout<<salary<<endl;
+}
+main()
+{
+   showInfo(23);
+   showInfo("Rishita");
+   showInfo(5634.2);
+} 
+
+Run Time Polymorphism:
+The compiler resolves the object at run time and then it decides which function call should be associated with the object.
+eg:
+class A{
+  public:
+  virtual void disp(){
+     cout<<"It is a class A";
+     }
+};
+class B:public A{
+  public:
+  void disp(){
+   cout<<"It is class B";
+};
+main(){
+A *ptr;
+B.obj;
+ptr = &obj;
+ptr->disp();
+
+} 
+Real life Example of Polymorphism : A person at the same time can have different characteristics . Like a man at the same
+time is father, a husband, an employee.
+
+4. Inheritance : Inheritance allows a class to inherit the properties and behaviour from another class
+
+Coding Example: 
+ // base class
+class Animal {
+
+   public:
+    void eat() {
+        cout << "I can eat!" << endl;
+    }
+
+    void sleep() {
+        cout << "I can sleep!" << endl;
+    }
+};
+
+// derived class
+class Dog : public Animal {
+ 
+   public:
+    void bark() {
+        cout << "I can bark! Woof woof!!" << endl;
+    }
+};
+
+int main() {
+    // Create object of the Dog class
+    Dog dog1;
+
+    // Calling members of the base class
+    dog1.eat();
+    dog1.sleep();
+
+    // Calling member of the derived class
+    dog1.bark();
+
+    return 0;
+}
+Real life example of inheritance : Child and parents, All the properties of father are inherited by his son.
+
+
+
+
+
+
+
+
+
+
+
+ 
