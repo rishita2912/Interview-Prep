@@ -1,0 +1,266 @@
+1. Process : Process means program in execution.It is a fundamental concept in operating systems and represents the execution of a program's instructions
+ by the CPU (Central Processing Unit) and associated resources.
+Some of the key points about the process are program execution, resource allocation, concurrency, IPC, process control block, process states and process creation and termination.
+
+
+2.What are mutex and semaphore?
+A mutex is a synchronization primitive used to ensure that only one thread at a time can access a shared resource or critical section.
+It provides mutual exclusion, meaning that when a thread acquires a mutex, it gains exclusive access to the resource. 
+Other threads attempting to acquire the same mutex will be blocked until the owning thread releases the mutex.
+Mutexes typically have two operations: lock (or acquire) and unlock (or release). Threads must acquire the mutex before accessing the 
+shared resource and release it when they are done.Mutexes are often used to protect shared data structures, such as lists,
+queues, and variables, from concurrent access by multiple threads.
+
+Eg code:
+#include <iostream>
+#include <thread>
+#include <mutex>
+
+class Mutex {
+public:
+    // Acquire the lock
+    void lock() {
+        mutex.lock();
+    }
+
+    // Release the lock
+    void unlock() {
+        mutex.unlock();
+    }
+
+private:
+    std::mutex mutex;
+};
+
+// Shared resource protected by the mutex
+int shared_resource = 0;
+
+// Mutex instance
+Mutex mutex;
+
+// Function to increment the shared resource
+void increment_shared_resource() {
+    // Acquire the lock
+    mutex.lock();
+
+    // Increment the shared resource
+    shared_resource++;
+
+    // Print the updated value of the shared resource
+    std::cout << "Shared resource incremented to: " << shared_resource << std::endl;
+
+    // Release the lock
+    mutex.unlock();
+}
+
+int main() {
+    // Create multiple threads to increment the shared resource
+    std::thread t1(increment_shared_resource);
+    std::thread t2(increment_shared_resource);
+
+    // Wait for the threads to finish
+    t1.join();
+    t2.join();
+
+    return 0;
+}
+
+
+Semaphore : A semaphore is a synchronization primitive that can be used to control access to a shared resource with limited capacity or
+to coordinate the execution of a fixed number of threads.
+Semaphores maintain a count (a non-negative integer) that represents the number of available resources or permits.
+Semaphores support two primary operations: wait (or P operation) and signal (or V operation).
+
+Eg code :
+#include <iostream>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+
+class Semaphore {
+public:
+    Semaphore(int count) : count_(count) {}
+
+    // Acquire a permit from the semaphore
+    void acquire() {
+        std::unique_lock<std::mutex> lock(mutex_);
+        while (count_ == 0) {
+            condition_.wait(lock);
+        }
+        count_--;
+    }
+
+    // Release a permit to the semaphore
+    void release() {
+        std::lock_guard<std::mutex> lock(mutex_);
+        count_++;
+        condition_.notify_one();
+    }
+
+private:
+    std::mutex mutex_;
+    std::condition_variable condition_;
+    int count_;
+};
+
+// Shared resource protected by the semaphore
+int shared_resource = 0;
+
+// Semaphore instance with initial count of 2
+Semaphore semaphore(2);
+
+// Function to increment the shared resource
+void worker() {
+    semaphore.acquire();
+    // Critical section
+    shared_resource++;
+    std::cout << "Shared resource incremented to: " << shared_resource << std::endl;
+    semaphore.release();
+}
+
+int main() {
+    // Create multiple threads to increment the shared resource
+    std::thread t1(worker);
+    std::thread t2(worker);
+    std::thread t3(worker);
+
+    // Wait for the threads to finish
+    t1.join();
+    t2.join();
+    t3.join();
+
+    return 0;
+}
+Difference between mutex and semaphore : Unlike mutexes, which provide exclusive access to a resource, 
+semaphores can be used to control access to a resource with a fixed capacity or to coordinate the execution of multiple threads.
+
+4.Paging: It's a method of breaking down the physical memory into smaller fixed-size blocks called "frames" and the logical memory
+into equally sized blocks called "pages."
+Paging consists of page table, page size, frame size, page faults, page replacement.
+
+5. LIFO :
+LIFO is a data structure or processing method where the last element 
+added to the structure is the first one to be removed.
+It follows the principle of "last in, first out," similar to a stack of
+plates where the last plate placed on top is the first one to be removed.
+
+FIFO:
+FIFO is a data structure or processing method where the first element added to the structure is the first one to be removed.
+It follows the principle of "first in, first out," similar to a queue where people 
+line up and the first person in line is served first.
+
+6. Race Condition : When the outcome of the program becomes unpredictable because the threads or processes "race" to 
+access shared resources without proper synchronization.
+Example of a Race Condition:
+Consider two threads incrementing a shared variable counter:
+
+Thread 1:
+
+makefile
+
+counter = counter + 1;
+
+Thread 2:
+
+makefile
+
+counter = counter + 1;
+
+If both threads execute simultaneously, the final value of counter may not be what is expected. For instance,
+if counter starts at 0, both threads might read the value as 0, increment it to 1, and write it back,
+resulting in a final value of 1 instead of 2.
+
+Deadlock : Deadlock is a situation in which two or more processes or threads
+are unable to proceed because each is waiting for the other to release a resource or satisfy a condition,
+effectively resulting in a deadlock.
+Conditions of deadlock :
+    Mutual Exclusion: At least one resource must be held in a non-sharable mode, meaning only one process or thread can use the resource at a time.
+    Hold and Wait: A process or thread holds at least one resource and is waiting to acquire additional resources that are currently held by other processes or threads.
+    No Preemption: Resources cannot be forcibly taken away from the processes or threads that hold them. They can only be released voluntarily.
+    Circular Wait: There must exist a circular chain of two or more processes or threads, each of which is waiting for a resource held by the next process or thread in the chain.
+
+Eg of deadlock :
+Consider two threads, each holding a resource that the other thread needs to proceed. Thread 1 holds Resource A and waits for Resource B, while Thread 2 holds Resource B and 
+waits for Resource A. Neither thread can proceed because they are both waiting for the other to release a resource, resulting in a deadlock situation.
+
+7. Tcp:
+TCP is a connection-oriented protocol. It establishes a reliable and ordered communication channel between two hosts before data exchange begins.
+It provides features such as error detection, retransmission of lost packets, in-order delivery, and flow control to ensure 
+that data is transmitted accurately and efficiently.
+Udp:
+UDP is a connectionless protocol. It does not establish a connection before transmitting data and does not guarantee delivery, ordering, or reliability of data packets.
+It provides a lightweight and fast communication method, making it suitable for applications where speed is more critical than reliability.
+
+DHCP
+DHCP stands for Dynamic Host Configuration Protocol. It's a network management protocol used on IP networks to automate the process 
+of assigning IP addresses and other network configuration parameters to devices connected to the network.
+It works by the following steps:
+1. IP adress assignment.
+2. Dynamic Configuration.
+3. CLient- server model.
+4. DHCP Discovery process.
+5. IP Address Lease.
+6. Lease Duration.
+
+IPV4 vs IPV6
+
+ IPv4 addresses are 32 bits long, allowing for approximately 4.3 billion unique addresses.
+ IPv6 addresses are 128 bits long, providing an astronomically larger address space capable of 
+accommodating approximately 340 undecillion (3.4 × 10^38) unique addresses.
+
+IPv4 has a fixed header size of 20 bytes, although it may include optional fields.
+IPv6 has a simpler and more efficient header format with a fixed size of 40 bytes.
+
+IPv4 supports packet fragmentation, where packets can be divided into smaller fragments to fit within the maximum transmission unit (MTU) of the network.
+IPv6 does not support fragmentation at the router level. Instead, it relies on end-to-end fragmentation at the source or destination host.
+
+8.SDLC : SDLC stands for Software Development Life Cycle. It is a process used by software development teams
+ to design, develop, test, and deploy software applications. SDLC defines a series of phases that software goes through from
+ its initial concept to its final implementation and maintenance.
+The phases of SDLC are :
+Plannig
+Analysis
+Design
+Implementation
+Testing
+Deployment
+Maintainance
+
+9. OSI Model
+The OSI (Open Systems Interconnection) model is a conceptual framework that 
+standardizes the functions of a telecommunication or computing system into seven distinct layers. It was developed by the International Organization for Standardization (ISO) to facilitate communication between different systems and devices, regardless of 
+their underlying hardware and software technologies.
+
+The seven layers of the OSI model are as follows:
+
+Physical Layer
+Data Link Layer
+Network Layer
+Transport Layer
+Session Layer
+Presentation Layer
+Application Layer
+
+10. NAT : Network Address Translation (NAT) is a technique used in computer networking to map one or more private IP addresses to one or more public IP addresses. It enables devices within a private network to share a single public IP address when accessing 
+resources on the internet. NAT operates at the network layer (Layer 3) of the OSI model.
+
+The Domain Name System (DNS) is a hierarchical and distributed naming system used to translate human-readable domain 
+names (such as www.example.com) into numerical IP addresses (such as 192.0.2.1) used by networked devices to locate resources on the internet. DNS operates at the application layer (Layer 7) of the OSI model.
+
+11. Network Topologies: 
+Network topology refers to the layout or arrangement of devices, nodes, and connections in a 
+computer network. Different network topologies offer various advantages and disadvantages in terms of performance, scalability, reliability, and cost. 
+There are following topologies:
+Bus topology: All the networks are connected to the single backbone.
+Eg: Ethernet cable using coaxial cables.
+Uses: Small networks with limited distance.
+
+Star Topology: In a star topology, all devices are connected to a central hub or switch.
+Eg: Ethernet networks using twisted pair cables.
+Uses: Commonly used modern LANs
+
+Ring Topology:Each device is connected in the form of loop.
+Eg : Token ring networks
+Uses: Suitable for network with fixed no. of devices.
+
+Hybrid Topology, mesh topology eg WANs, Hybrid Topology
