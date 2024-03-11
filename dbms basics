@@ -1,0 +1,57 @@
+1. SQL Query to find the highest salary
+
+Select e.department_id, e.employee_name, e.salary
+From employees e
+Join(
+  Select department_id, MAX(salary) As max_salary
+  From employees
+  Group by department_id
+) max_salaries
+On e.department_id = max_salaries.department_id
+And e.salary = max_ssalaries.max_salary;
+
+2. Joins
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+3.ACID is an acronym that stands for Atomicity, Consistency, Isolation, and Durability. These four 
+properties are principles that ensure reliability and consistency in database transactions. 
+
+Atomicity: If any part of the transaction fails, the entire transaction is rolled back to its original state,
+and the database is left unchanged.
+
+Consistency: Consistency ensures that the database remains in a consistent state before and after the execution of transactions.
+
+Isolation: Isolation ensures that the concurrent execution of multiple transactions does not interfere with each other.
+
+Durability: Durability guarantees that the changes made by a committed transaction are permanently saved.
+
+4.
